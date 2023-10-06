@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import requestApi from '../helpers/api';
+import { toast } from 'react-toastify';
+import { useDispatch } from 'react-redux';
+import * as actions from '../redux/actions';
 
 const Login = () => {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     const [loginData, setLoginData] = useState({});
     const [formErrors, setFormErrors] = useState({});
     const [isSubmitted, setIsSubmitted] = useState({});
@@ -52,13 +56,23 @@ const Login = () => {
         let valid = validateForm();
         if(valid){
             console.log("req api")
+            dispatch(actions.controlLoading(true))
             requestApi('/auth/login', 'POST', loginData).then((res) => {
                 console.log(res);
                 localStorage.setItem('access_token', res.data.access_token);
                 localStorage.setItem('refresh_token', res.data.refresh_token);
+                dispatch(actions.controlLoading(false))
                 navigate('/');
             }).catch((err) => {
+                dispatch(actions.controlLoading(false))
                 console.log(err);
+                if(typeof err.response !== 'undefined'){
+                    if(err.response.status !== 201){
+                        toast.error(err.response.data.message, {position: 'top-center'})
+                    }
+                }else{
+                    toast.error("Server is down. Please try again!", {position: 'top-center'})
+                }
             })
         }
 
