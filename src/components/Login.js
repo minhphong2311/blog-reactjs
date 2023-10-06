@@ -1,6 +1,70 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import requestApi from '../helpers/api';
 
 const Login = () => {
+    const navigate = useNavigate();
+    const [loginData, setLoginData] = useState({});
+    const [formErrors, setFormErrors] = useState({});
+    const [isSubmitted, setIsSubmitted] = useState({});
+
+    const onChange = (event) => {
+        let target = event.target;
+        setLoginData({
+            ...loginData, [target.name]:target.value
+        })
+    }
+
+    useEffect(() => {
+        if(isSubmitted) {
+            validateForm();
+        }
+    }, [loginData])
+
+    const validateForm = () => {
+        let isValid = true;
+        const errors = {};
+        if(loginData.email === '' || loginData.password === undefined) {
+            errors.email = 'Please enter email'
+        }else{
+            let valid = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(loginData.email)
+            if(!valid) {
+                errors.email = "Email is not valid"
+            }
+        }
+
+        if(loginData.password === '' || loginData.password === undefined ){
+            errors.password = "Please enter password"
+        }
+
+        if(Object.keys(errors).length > 0){
+            setFormErrors(errors);
+            isValid = false;
+        }else{
+            setFormErrors({});
+        }
+
+        return isValid;
+    }
+
+    const onSubmit = () => {
+        console.log(loginData);
+        let valid = validateForm();
+        if(valid){
+            console.log("req api")
+            requestApi('/auth/login', 'POST', loginData).then((res) => {
+                console.log(res);
+                localStorage.setItem('access_token', res.data.access_token);
+                localStorage.setItem('refresh_token', res.data.refresh_token);
+                navigate('/');
+            }).catch((err) => {
+                console.log(err);
+            })
+        }
+
+        setIsSubmitted(true);
+    }
+
   return (
     <div id="layoutAuthentication" className='bg-primary'>
             <div id="layoutAuthentication_content">
@@ -13,25 +77,25 @@ const Login = () => {
                                     <div className="card-body">
                                         <form>
                                             <div className="form-floating mb-3">
-                                                <input className="form-control" id="inputEmail" type="email" placeholder="name@example.com" />
-                                                <label for="inputEmail">Email address</label>
+                                                <input className="form-control" name="email" type="email" onChange={onChange} placeholder="name@example.com" />
+                                                <label>Email address</label>
+                                                {formErrors.email && <p style={{color:'red'}}>{formErrors.email}</p>}
                                             </div>
                                             <div className="form-floating mb-3">
-                                                <input className="form-control" id="inputPassword" type="password" placeholder="Password" />
-                                                <label for="inputPassword">Password</label>
-                                            </div>
-                                            <div className="form-check mb-3">
-                                                <input className="form-check-input" id="inputRememberPassword" type="checkbox" value="" />
-                                                <label className="form-check-label" for="inputRememberPassword">Remember Password</label>
+                                                <input className="form-control" name="password" type="password" onChange={onChange} placeholder="Password" />
+                                                <label>Password</label>
+                                                {formErrors.password && <p style={{color:'red'}}>{formErrors.password}</p>}
                                             </div>
                                             <div className="d-flex align-items-center justify-content-between mt-4 mb-0">
                                                 <a className="small" href="password.html">Forgot Password?</a>
-                                                <a className="btn btn-primary" href="index.html">Login</a>
+                                                <button className="btn btn-primary" type='button' onClick={onSubmit}>Login</button>
                                             </div>
                                         </form>
                                     </div>
                                     <div className="card-footer text-center py-3">
-                                        <div className="small"><a href="register.html">Need an account? Sign up!</a></div>
+                                        <div className="small">
+                                            <Link to="/register" className="">Need an account? Sign up!</Link>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
