@@ -1,7 +1,8 @@
 import React from 'react'
+import LiveSearch from './LiveSearch';
 
 const DataTable = (props) => {
-    const { name, data, columns, currentPage, numOfPage, onPageChange, onChangeItemsPerPage } = props;
+    const { name, data, columns, currentPage, numOfPage, onPageChange, onChangeItemsPerPage, onKeySearch } = props;
 
     const renderHeaders = () => {
         return columns.map((col, index) => <th key={index}>{col.name}</th>)
@@ -75,7 +76,7 @@ const DataTable = (props) => {
                     </div>
                     <div className='col-sm-12 col-md-6'>
                         <label className='d-inline-flex float-end'>Search: 
-                            <input type='search' className='form-control form-control-sm ms-1' placeholder='Email or Name' />
+                            <LiveSearch onKeySearch={onKeySearch} />
                         </label>
                     </div>
                 </div>
