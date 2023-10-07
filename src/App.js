@@ -8,6 +8,7 @@ import Register from './components/Register';
 import PrivateRoutes from './layouts/PrivateRoutes';
 import PublicRoutes from './layouts/PublicRoutes';
 import Layout from './layouts/Layout';
+import UserList from './components/user/UserList';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
       <Route element={<Main/>}>
         <Route element={<PrivateRoutes />}>
           <Route path='/' element={<Dashboard/>} />
+          <Route path='/users' element={<UserList/>} />
         </Route>
       </Route>
       <Route element={<PublicRoutes />}>
