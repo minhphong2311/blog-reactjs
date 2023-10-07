@@ -3,6 +3,7 @@ import requestApi from '../../helpers/api'
 import { useDispatch } from 'react-redux'
 import * as actions from '../../redux/actions'
 import DataTable from '../common/DataTable'
+import { Button, Modal } from 'react-bootstrap'
 
 const UserList = () => {
     const dispatch = useDispatch()
@@ -11,6 +12,11 @@ const UserList = () => {
     const [currentPage, setCurrentPage] = useState(1)
     const [itemsPerPage, setItemsPerPage] = useState(1)
     const [searchString, setSearchString] = useState('')
+    const [selectedRows, setSelectedRows] = useState([])
+    const [deleteItem, setDeleteItem] = useState(null)
+    const [deleteType, setDeleteType] = useState('single')
+    const [showModal, setShowModal] = useState(false)
+    const [refresh, setRefresh] = useState(Date.now())
 
     const columns = [
         {
@@ -42,11 +48,51 @@ const UserList = () => {
             element: row => (
                 <>
                     <button type="button" class="btn btn-primary btn-sm me-1"><i className='fa fa-pencil'></i> Edit</button>
-                    <button type="button" class="btn btn-danger btn-sm me-1"><i className='fa fa-trash'></i> Delete</button>
+                    <button type="button" class="btn btn-danger btn-sm me-1" onClick={() => handleDelete(row.id)}><i className='fa fa-trash'></i> Delete</button>
                 </>
             )
         },
     ]
+
+    const handleDelete = (id) => {
+        console.log("single delete ", id)
+        setShowModal(true)
+        setDeleteItem(id)
+        setDeleteType('single')
+    }
+
+    const handleMultiDelete = () => {
+        console.log("multi delete ", selectedRows)
+        setShowModal(true)
+        setDeleteType('multi')
+    }
+
+    const requestDeleteApi = () => {
+        if(deleteType === 'single'){
+            dispatch(actions.controlLoading(true))
+            requestApi(`/users/${deleteItem}`, 'DELETE', []).then(response => {
+                setShowModal(false)
+                setRefresh(Date.now())
+                dispatch(actions.controlLoading(false))
+            }).catch(err => {
+                console.log(err)
+                setShowModal(false)
+                dispatch(actions.controlLoading(false))
+            })
+        }else{
+            dispatch(actions.controlLoading(true))
+            requestApi(`/users/multiple?ids=${selectedRows.toString()}`, 'DELETE', []).then(response => {
+                setShowModal(false)
+                setRefresh(Date.now())
+                setSelectedRows([])
+                dispatch(actions.controlLoading(false))
+            }).catch(err => {
+                console.log(err)
+                setShowModal(false)
+                dispatch(actions.controlLoading(false))
+            })
+        }
+    }
 
     useEffect(() => {
         dispatch(actions.controlLoading(true))
@@ -60,7 +106,7 @@ const UserList = () => {
             console.log(err)
             dispatch(actions.controlLoading(false))
         })
-    }, [currentPage, itemsPerPage, searchString])
+    }, [currentPage, itemsPerPage, searchString, refresh])
 
     return (
         <div id='layoutSidenav_content'>
@@ -71,6 +117,10 @@ const UserList = () => {
                         <li className="breadcrumb-item"><a href="index.html">Dashboard</a></li>
                         <li className="breadcrumb-item active">Tables</li>
                     </ol>
+                    <div className='mb-3'>
+                        <button type='button' className='btn btn-sm btn-success me-2'><i className='fa fa-plus'></i> Add new</button>
+                        {selectedRows.length > 0 && <button type='button' onClick={handleMultiDelete} className='btn btn-sm btn-danger'><i className='fa fa-trash'></i> Delete</button>}
+                    </div>
                     <DataTable 
                         name="List Users" 
                         data={users} 
@@ -83,9 +133,25 @@ const UserList = () => {
                             console.log('keyword in comp', keyword)
                             setSearchString(keyword)
                         }}
+                        onSelectedRows={rows => {
+                            console.log("Selected rows in user list", rows)
+                            setSelectedRows(rows)
+                        }}
                     />
                 </div>
             </main>
+            <Modal show={showModal} onHide={() => setShowModal(false)} size='sm'>
+                <Modal.Header closeButton>
+                    <Modal.Title>Confirmation</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    Are you sure want to delete?
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button onClick={() => setShowModal(false)}>Close</Button>
+                    <Button className='btn-danger' onClick={requestDeleteApi}>Delete</Button>
+                </Modal.Footer>
+            </Modal>
         </div>
     )
 }

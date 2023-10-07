@@ -1,23 +1,54 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import LiveSearch from './LiveSearch';
 
 const DataTable = (props) => {
-    const { name, data, columns, currentPage, numOfPage, onPageChange, onChangeItemsPerPage, onKeySearch } = props;
+    const { name, data, columns, currentPage, numOfPage, onPageChange, onChangeItemsPerPage, onKeySearch, onSelectedRows } = props;
+    const [selectedRows, setSelectedRows] = useState([])
 
     const renderHeaders = () => {
         return columns.map((col, index) => <th key={index}>{col.name}</th>)
     }
 
+    useEffect(() => {
+        console.log("selected row datatable ",selectedRows)
+        onSelectedRows(selectedRows)
+    }, [selectedRows])
+
     const renderData = () =>{
         return (
             data.map((item, index) => (
                 <tr key={index}>
+                    <td><input type='checkbox' checked={selectedRows.includes(String(item.id))? true:false} className='form-check-input' value={item.id} onChange={onClickCheckbox} /></td>
                     {
                         columns.map((col, ind) => <td key={ind}>{col.element(item)}</td>)
                     }
                 </tr>
             ))
         )
+    }
+
+    const onClickCheckbox = (event) => {
+        let checked = event.target.checked;
+        let value = event.target.value;
+        if(checked){
+            if(!selectedRows.includes(value)){
+                setSelectedRows([...selectedRows, value])
+            }
+        }else{
+            let index = selectedRows.indexOf(value)
+            const temp = [...selectedRows]
+            temp.splice(index, 1)
+            setSelectedRows(temp)
+        }
+    }
+
+    const onSelectAll = (event) => {
+        if(event.target.checked){
+            const temp = data.map(element => String(element.id))
+            setSelectedRows(temp)
+        }else{
+            setSelectedRows([])
+        }
     }
 
     const renderPagination = () => {
@@ -83,6 +114,9 @@ const DataTable = (props) => {
                 <table class="table table-bordered table-striped" width='100%'>
                     <thead>
                         <tr>
+                            <td>
+                                <input checked={selectedRows.length === data.length && data.length > 0 ? true : false} type='checkbox' className='form-check-input' onChange={onSelectAll} />
+                            </td>
                             {renderHeaders()}
                         </tr>
                     </thead>
