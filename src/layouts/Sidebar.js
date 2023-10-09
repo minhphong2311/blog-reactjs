@@ -20,7 +20,7 @@ const Sidebar = () => {
                     </a>
                     <div className="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                         <nav className="sb-sidenav-menu-nested nav">
-                            <Link className="nav-link" to="/users">Add User</Link>
+                            <Link className="nav-link" to="/user/add">Add User</Link>
                             <Link className="nav-link" to="/users">List Users</Link>
                         </nav>
                     </div>

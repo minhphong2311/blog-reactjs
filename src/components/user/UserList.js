@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux'
 import * as actions from '../../redux/actions'
 import DataTable from '../common/DataTable'
 import { Button, Modal } from 'react-bootstrap'
+import { Link } from 'react-router-dom'
 
 const UserList = () => {
     const dispatch = useDispatch()
@@ -118,7 +119,7 @@ const UserList = () => {
                         <li className="breadcrumb-item active">Tables</li>
                     </ol>
                     <div className='mb-3'>
-                        <button type='button' className='btn btn-sm btn-success me-2'><i className='fa fa-plus'></i> Add new</button>
+                        <Link to='/user/add' className='btn btn-sm btn-success me-2'><i className='fa fa-plus'></i> Add new</Link>
                         {selectedRows.length > 0 && <button type='button' onClick={handleMultiDelete} className='btn btn-sm btn-danger'><i className='fa fa-trash'></i> Delete</button>}
                     </div>
                     <DataTable 

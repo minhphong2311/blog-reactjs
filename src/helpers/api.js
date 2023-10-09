@@ -28,7 +28,7 @@ export default function requestApi(endpoint, method, body, responseType = 'json'
         },
         async(error) => {
             const originalConfig = error.config;
-            console.log('Access token expired')
+            console.log('Access token expired', error.response)
             if(error.response && error.response.status === 419){
                 try{
                     console.log('call refresh token api');
