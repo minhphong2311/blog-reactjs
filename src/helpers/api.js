@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export default function requestApi(endpoint, method, body, responseType = 'json') {
+export default function requestApi(endpoint, method, body = [], responseType = 'json') {
     const headers = {
         "Accept": "application/json",
         "Content-Type": "application/json",

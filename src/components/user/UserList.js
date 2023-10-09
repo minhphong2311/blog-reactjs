@@ -48,8 +48,8 @@ const UserList = () => {
             name: "Actions",
             element: row => (
                 <>
-                    <button type="button" class="btn btn-primary btn-sm me-1"><i className='fa fa-pencil'></i> Edit</button>
-                    <button type="button" class="btn btn-danger btn-sm me-1" onClick={() => handleDelete(row.id)}><i className='fa fa-trash'></i> Delete</button>
+                    <Link to={`/user/edit/${row.id}`} className="btn btn-primary btn-sm me-1"><i className='fa fa-pencil'></i> Edit</Link>
+                    <button type="className" class="btn btn-danger btn-sm me-1" onClick={() => handleDelete(row.id)}><i className='fa fa-trash'></i> Delete</button>
                 </>
             )
         },
