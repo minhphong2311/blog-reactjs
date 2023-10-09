@@ -7,9 +7,9 @@ import { Button, Modal } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import { formatDateTime } from '../../helpers/common'
 
-const UserList = () => {
+const PostList = () => {
     const dispatch = useDispatch()
-    const [users, setUsers] = useState([])
+    const [posts, setPosts] = useState([])
     const [numOfPage, setNumOfPage] = useState(1)
     const [currentPage, setCurrentPage] = useState(1)
     const [itemsPerPage, setItemsPerPage] = useState(1)
@@ -26,16 +26,16 @@ const UserList = () => {
             element: row => row.id
         },
         {
-            name: "First Name",
-            element: row => row.first_name
+            name: "Title",
+            element: row => row.title
         },
         {
-            name: "Last Name",
-            element: row => row.last_name
+            name: "Thumbnail",
+            element: row => <img width="70px" src={process.env.REACT_APP_API_URL + '/' + row.thumbnail} />
         },
         {
-            name: "Email",
-            element: row => row.email
+            name: "Status",
+            element: row => row.status == 1 ? "Active" : "Inactive"
         },
         {
             name: "Created at",
@@ -49,7 +49,7 @@ const UserList = () => {
             name: "Actions",
             element: row => (
                 <>
-                    <Link to={`/user/edit/${row.id}`} className="btn btn-primary btn-sm me-1"><i className='fa fa-pencil'></i> Edit</Link>
+                    <Link to={`/post/edit/${row.id}`} className="btn btn-primary btn-sm me-1"><i className='fa fa-pencil'></i> Edit</Link>
                     <button type="className" class="btn btn-danger btn-sm me-1" onClick={() => handleDelete(row.id)}><i className='fa fa-trash'></i> Delete</button>
                 </>
             )
@@ -72,7 +72,7 @@ const UserList = () => {
     const requestDeleteApi = () => {
         if(deleteType === 'single'){
             dispatch(actions.controlLoading(true))
-            requestApi(`/users/${deleteItem}`, 'DELETE', []).then(response => {
+            requestApi(`/posts/${deleteItem}`, 'DELETE', []).then(response => {
                 setShowModal(false)
                 setRefresh(Date.now())
                 dispatch(actions.controlLoading(false))
@@ -83,7 +83,7 @@ const UserList = () => {
             })
         }else{
             dispatch(actions.controlLoading(true))
-            requestApi(`/users/multiple?ids=${selectedRows.toString()}`, 'DELETE', []).then(response => {
+            requestApi(`/posts/multiple?ids=${selectedRows.toString()}`, 'DELETE', []).then(response => {
                 setShowModal(false)
                 setRefresh(Date.now())
                 setSelectedRows([])
@@ -99,9 +99,9 @@ const UserList = () => {
     useEffect(() => {
         dispatch(actions.controlLoading(true))
         let query = `?items_per_page=${itemsPerPage}&page=${currentPage}&search=${searchString}`
-        requestApi(`/users${query}`, 'GET', []).then(response => {
+        requestApi(`/posts${query}`, 'GET', []).then(response => {
             console.log('response =>', response)
-            setUsers(response.data.data)
+            setPosts(response.data.data)
             setNumOfPage(response.data.lastPage)
             dispatch(actions.controlLoading(false))
         }).catch(err => {
@@ -114,18 +114,18 @@ const UserList = () => {
         <div id='layoutSidenav_content'>
             <main>
                 <div className="container-fluid px-4">
-                    <h1 className="mt-4">Users</h1>
+                    <h1 className="mt-4">Posts</h1>
                     <ol className="breadcrumb mb-4">
                         <li className="breadcrumb-item"><Link to="/">Dashboard</Link></li>
-                        <li className="breadcrumb-item active">User List</li>
+                        <li className="breadcrumb-item active">Post List</li>
                     </ol>
                     <div className='mb-3'>
-                        <Link to='/user/add' className='btn btn-sm btn-success me-2'><i className='fa fa-plus'></i> Add new</Link>
+                        <Link to='/post/add' className='btn btn-sm btn-success me-2'><i className='fa fa-plus'></i> Add new</Link>
                         {selectedRows.length > 0 && <button type='button' onClick={handleMultiDelete} className='btn btn-sm btn-danger'><i className='fa fa-trash'></i> Delete</button>}
                     </div>
                     <DataTable 
-                        name="List Users" 
-                        data={users} 
+                        name="List Posts" 
+                        data={posts} 
                         columns={columns}
                         numOfPage={numOfPage}
                         currentPage={currentPage}
@@ -158,4 +158,4 @@ const UserList = () => {
     )
 }
 
-export default UserList
+export default PostList
