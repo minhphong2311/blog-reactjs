@@ -30,6 +30,10 @@ const PostList = () => {
             element: row => row.title
         },
         {
+            name: "Summary",
+            element: row => row.summary
+        },
+        {
             name: "Thumbnail",
             element: row => <img width="70px" src={process.env.REACT_APP_API_URL + '/' + row.thumbnail} />
         },

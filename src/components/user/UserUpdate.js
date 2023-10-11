@@ -10,7 +10,6 @@ const UserUpdate = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const params = useParams();
-    console.log('params ', params.id)
     const {register, setValue, handleSubmit, formState: {errors}} = useForm()
 
     useEffect(() => {

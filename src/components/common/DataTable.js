@@ -122,6 +122,9 @@ const DataTable = (props) => {
                     </thead>
                     <tfoot>
                         <tr>
+                            <td>
+                                <input checked={selectedRows.length === data.length && data.length > 0 ? true : false} type='checkbox' className='form-check-input' onChange={onSelectAll} />
+                            </td>
                             {renderHeaders()}
                         </tr>
                     </tfoot>
