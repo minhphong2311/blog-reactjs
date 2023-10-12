@@ -7,6 +7,7 @@ import requestApi from '../../helpers/api'
 import {toast} from 'react-toastify'
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import CustomUploadAdapter from '../../helpers/CustomUploadAdapter'
 
 const PostUpdate = () => {
     const dispatch = useDispatch();
@@ -81,6 +82,13 @@ const PostUpdate = () => {
         }
     }
 
+    function uploadPlugin( editor ) {
+        editor.plugins.get( 'FileRepository' ).createUploadAdapter = ( loader ) => {
+            // Configure the URL to the upload script in your back-end here!
+            return new CustomUploadAdapter( loader );
+        };
+    }
+
     return (
         <div id='layoutSidenav_content'>
             <main>
@@ -131,6 +139,9 @@ const PostUpdate = () => {
                                             onFocus={ ( event, editor ) => {
                                                 console.log( 'Focus.', editor );
                                             } }
+                                            config={{
+                                                extraPlugins: [ uploadPlugin ],
+                                            }}
                                         />
                                         {errors.description && <p style={{ color: 'red' }}>{errors.description.message}</p>}
                                     </div>
