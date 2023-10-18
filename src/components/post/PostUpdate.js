@@ -50,7 +50,7 @@ const PostUpdate = () => {
             const renderData = async () =>{
                 const res = await requestApi('/categories', 'GET')
                 console.log(res)
-                setCategories(res.data)
+                setCategories(res.data.data)
                 const detailPost = await requestApi(`/posts/${params.id}`, 'GET')
                 console.log('detaiPost >>>', detailPost)
                 const fields = ['title', 'summary', 'description', 'thumbnail', 'category', 'status']

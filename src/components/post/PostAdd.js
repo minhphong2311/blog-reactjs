@@ -57,7 +57,7 @@ const PostAdd = () => {
         dispatch(actions.controlLoading(true))
         requestApi('/categories', 'GET').then(res => {
             console.log('categories', res)
-            setCategories(res.data)
+            setCategories(res.data.data)
             dispatch(actions.controlLoading(false))
         }).catch(err => {
             console.log('categories err', err)

@@ -12,7 +12,7 @@ const PostList = () => {
     const [posts, setPosts] = useState([])
     const [numOfPage, setNumOfPage] = useState(1)
     const [currentPage, setCurrentPage] = useState(1)
-    const [itemsPerPage, setItemsPerPage] = useState(1)
+    const [itemsPerPage, setItemsPerPage] = useState(5)
     const [searchString, setSearchString] = useState('')
     const [selectedRows, setSelectedRows] = useState([])
     const [deleteItem, setDeleteItem] = useState(null)
@@ -129,6 +129,7 @@ const PostList = () => {
                     </div>
                     <DataTable 
                         name="List Posts" 
+                        placeholderSearch="Title"
                         data={posts} 
                         columns={columns}
                         numOfPage={numOfPage}
