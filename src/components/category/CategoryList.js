@@ -7,12 +7,12 @@ import { Button, Modal } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import { formatDateTime } from '../../helpers/common'
 
-const UserList = () => {
+const CategoryList = () => {
     const dispatch = useDispatch()
-    const [users, setUsers] = useState([])
+    const [category, setCategory] = useState([])
     const [numOfPage, setNumOfPage] = useState(1)
     const [currentPage, setCurrentPage] = useState(1)
-    const [itemsPerPage, setItemsPerPage] = useState(1)
+    const [itemsPerPage, setItemsPerPage] = useState(5)
     const [searchString, setSearchString] = useState('')
     const [selectedRows, setSelectedRows] = useState([])
     const [deleteItem, setDeleteItem] = useState(null)
@@ -26,16 +26,12 @@ const UserList = () => {
             element: row => row.id
         },
         {
-            name: "First Name",
-            element: row => row.first_name
+            name: "Name",
+            element: row => row.name
         },
         {
-            name: "Last Name",
-            element: row => row.last_name
-        },
-        {
-            name: "Email",
-            element: row => row.email
+            name: "Status",
+            element: row => row.status == 1 ? "Active" : "Inactive"
         },
         {
             name: "Created at",
@@ -49,7 +45,7 @@ const UserList = () => {
             name: "Actions",
             element: row => (
                 <>
-                    <Link to={`/user/edit/${row.id}`} className="btn btn-primary btn-sm me-1"><i className='fa fa-pencil'></i> Edit</Link>
+                    <Link to={`/category/edit/${row.id}`} className="btn btn-primary btn-sm me-1"><i className='fa fa-pencil'></i> Edit</Link>
                     <button type="className" class="btn btn-danger btn-sm me-1" onClick={() => handleDelete(row.id)}><i className='fa fa-trash'></i> Delete</button>
                 </>
             )
@@ -57,14 +53,14 @@ const UserList = () => {
     ]
 
     const handleDelete = (id) => {
-        console.log("single delete ", id)
+        // console.log("single delete ", id)
         setShowModal(true)
         setDeleteItem(id)
         setDeleteType('single')
     }
 
     const handleMultiDelete = () => {
-        console.log("multi delete ", selectedRows)
+        // console.log("multi delete ", selectedRows)
         setShowModal(true)
         setDeleteType('multi')
     }
@@ -72,7 +68,7 @@ const UserList = () => {
     const requestDeleteApi = () => {
         if(deleteType === 'single'){
             dispatch(actions.controlLoading(true))
-            requestApi(`/users/${deleteItem}`, 'DELETE', []).then(response => {
+            requestApi(`/categories/${deleteItem}`, 'DELETE', []).then(response => {
                 setShowModal(false)
                 setRefresh(Date.now())
                 dispatch(actions.controlLoading(false))
@@ -83,7 +79,7 @@ const UserList = () => {
             })
         }else{
             dispatch(actions.controlLoading(true))
-            requestApi(`/users/multiple?ids=${selectedRows.toString()}`, 'DELETE', []).then(response => {
+            requestApi(`/categories/multiple?ids=${selectedRows.toString()}`, 'DELETE', []).then(response => {
                 setShowModal(false)
                 setRefresh(Date.now())
                 setSelectedRows([])
@@ -99,9 +95,9 @@ const UserList = () => {
     useEffect(() => {
         dispatch(actions.controlLoading(true))
         let query = `?items_per_page=${itemsPerPage}&page=${currentPage}&search=${searchString}`
-        requestApi(`/users${query}`, 'GET', []).then(response => {
-            console.log('response =>', response)
-            setUsers(response.data.data)
+        requestApi(`/categories${query}`, 'GET', []).then(response => {
+            // console.log('response =>', response.data)
+            setCategory(response.data.data)
             setNumOfPage(response.data.lastPage)
             dispatch(actions.controlLoading(false))
         }).catch(err => {
@@ -114,30 +110,30 @@ const UserList = () => {
         <div id='layoutSidenav_content'>
             <main>
                 <div className="container-fluid px-4">
-                    <h1 className="mt-4">Users</h1>
+                    <h1 className="mt-4">Category</h1>
                     <ol className="breadcrumb mb-4">
                         <li className="breadcrumb-item"><Link to="/">Dashboard</Link></li>
-                        <li className="breadcrumb-item active">User List</li>
+                        <li className="breadcrumb-item active">Category List</li>
                     </ol>
                     <div className='mb-3'>
-                        <Link to='/user/add' className='btn btn-sm btn-success me-2'><i className='fa fa-plus'></i> Add new</Link>
+                        <Link to='/category/add' className='btn btn-sm btn-success me-2'><i className='fa fa-plus'></i> Add new</Link>
                         {selectedRows.length > 0 && <button type='button' onClick={handleMultiDelete} className='btn btn-sm btn-danger'><i className='fa fa-trash'></i> Delete</button>}
                     </div>
                     <DataTable 
-                        name="List Users" 
-                        placeholderSearch="Name or Email"
-                        data={users} 
+                        name="List Category" 
+                        placeholderSearch="Name"
+                        data={category} 
                         columns={columns}
                         numOfPage={numOfPage}
                         currentPage={currentPage}
                         onPageChange={setCurrentPage}
                         onChangeItemsPerPage={setItemsPerPage}
                         onKeySearch={(keyword) => {
-                            console.log('keyword in comp', keyword)
+                            // console.log('keyword in comp', keyword)
                             setSearchString(keyword)
                         }}
                         onSelectedRows={rows => {
-                            console.log("Selected rows in user list", rows)
+                            // console.log("Selected rows in category list", rows)
                             setSelectedRows(rows)
                         }}
                     />
@@ -157,6 +153,6 @@ const UserList = () => {
             </Modal>
         </div>
     )
-}
+};
 
-export default UserList
+export default CategoryList;

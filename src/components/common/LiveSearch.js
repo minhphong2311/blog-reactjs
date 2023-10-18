@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 
-const LiveSearch = ({onKeySearch}) => {
+const LiveSearch = (props) => {
+    const { onKeySearch, placeholderSearch } = props;
     const [keyword, setKeyword] =useState('')
 
     useEffect(() => {
@@ -20,7 +21,7 @@ const LiveSearch = ({onKeySearch}) => {
     }
 
     return (
-        <input type='search' onChange={onTyping} value={keyword} className='form-control form-control-sm ms-1' placeholder='Email or Name' />
+        <input type='search' onChange={onTyping} value={keyword} className='form-control form-control-sm ms-1' placeholder={placeholderSearch} />
     )
 }
 

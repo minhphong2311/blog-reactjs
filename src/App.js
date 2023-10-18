@@ -17,6 +17,9 @@ import Profile from './components/Profile';
 import PostList from './components/post/PostList';
 import PostAdd from './components/post/PostAdd';
 import PostUpdate from './components/post/PostUpdate';
+import CategoryList from './components/category/CategoryList';
+import CategoryAdd from './components/category/CategoryAdd';
+import CategoryUpdate from './components/category/CategoryUpdate';
 
 function App() {
   return (
@@ -32,6 +35,9 @@ function App() {
           <Route path='/posts' element={<PostList/>} />
           <Route path='/post/add' element={<PostAdd/>} />
           <Route path='/post/edit/:id' element={<PostUpdate/>} />
+          <Route path='/category' element={<CategoryList/>} />
+          <Route path='/category/add' element={<CategoryAdd/>} />
+          <Route path='/category/edit/:id' element={<CategoryUpdate/>} />
         </Route>
       </Route>
       <Route element={<PublicRoutes />}>

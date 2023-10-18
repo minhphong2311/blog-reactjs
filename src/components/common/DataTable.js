@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import LiveSearch from './LiveSearch';
 
 const DataTable = (props) => {
-    const { name, data, columns, currentPage, numOfPage, onPageChange, onChangeItemsPerPage, onKeySearch, onSelectedRows } = props;
+    const { name, placeholderSearch, data, columns, currentPage, numOfPage, onPageChange, onChangeItemsPerPage, onKeySearch, onSelectedRows } = props;
     const [selectedRows, setSelectedRows] = useState([])
 
     const renderHeaders = () => {
@@ -96,10 +96,6 @@ const DataTable = (props) => {
                     <div className='col-sm-12 col-md-6'>
                         <label className='d-inline-flex'>Show
                         <select name='' className='form-select form-select-sm ms-1 me-1' onChange={onChangeOption}>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
                             <option value="5">5</option>
                             <option value="10">10</option>
                         </select> entries
@@ -107,7 +103,7 @@ const DataTable = (props) => {
                     </div>
                     <div className='col-sm-12 col-md-6'>
                         <label className='d-inline-flex float-end'>Search: 
-                            <LiveSearch onKeySearch={onKeySearch} />
+                            <LiveSearch onKeySearch={onKeySearch} placeholderSearch={placeholderSearch} />
                         </label>
                     </div>
                 </div>
